@@ -1,4 +1,4 @@
-module github.com/tecmise/connector-api
+module github.com/tecmise/connector-lib
 
 go 1.23.5
 
