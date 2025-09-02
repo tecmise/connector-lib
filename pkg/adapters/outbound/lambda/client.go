@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tecmise/connector-api/pkg/ports/output/connector"
-	"github.com/tecmise/connector-api/pkg/ports/output/constant"
-	lambda2 "github.com/tecmise/connector-api/pkg/ports/output/lambda"
+	"github.com/tecmise/connector-lib/pkg/ports/output/connector"
+	"github.com/tecmise/connector-lib/pkg/ports/output/constant"
+	lambda2 "github.com/tecmise/connector-lib/pkg/ports/output/lambda"
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/tecmise/connector-api/pkg/ports/output/constant"
+	"github.com/tecmise/connector-lib/pkg/ports/output/constant"
 
 	"github.com/gofrs/uuid"
 )

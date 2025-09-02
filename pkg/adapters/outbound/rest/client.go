@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tecmise/connector-api/pkg/ports/output/connector"
+	"github.com/tecmise/connector-lib/pkg/ports/output/connector"
 	"io"
 	"mime/multipart"
 	"strings"
