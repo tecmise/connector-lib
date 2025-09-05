@@ -109,7 +109,7 @@ func (c *ProtocolClient[T, R]) invoke(
 	logrus.Debugf("Payload JSON: %s", string(payloadJson))
 
 	input := &lambda.InvokeInput{
-		FunctionName: aws.String(c.uri),
+		FunctionName: aws.String(c.lambdaName),
 		Payload:      payloadJson,
 	}
 
