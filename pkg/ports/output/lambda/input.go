@@ -13,10 +13,4 @@ type (
 		RequestContext                  RequestContext      `json:"requestContext"`
 		Body                            string              `json:"body"`
 	}
-
-	//RequestContext struct {
-	//	ResourcePath string `json:"resourcePath"`
-	//	Path         string `json:"path"`
-	//	HttpMethod   string `json:"httpMethod"`
-	//}
 )

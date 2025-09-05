@@ -7,21 +7,17 @@ import (
 )
 
 type InvokeOutputResult[R any] struct {
-	output *lambda.InvokeOutput
-	error  error
+	Output *lambda.InvokeOutput
+	Error  error
 }
 
-//type Response struct {
-//	StatusCode        int         `json:"statusCode"`
-//	Headers           interface{} `json:"headers"`
-//	MultiValueHeaders struct {
-//		ContentType []string `json:"Content-Type"`
-//	} `json:"multiValueHeaders"`
-//	Body string `json:"body"`
-//}
-
 func (r InvokeOutputResult[R]) Marshal(response interface{}) error {
-	resp := r.output
+	if r.Error != nil {
+		logrus.Errorf(r.Error.Error())
+		return r.Error
+	}
+
+	resp := r.Output
 	if resp.StatusCode == 204 {
 		logrus.Debugf("Lambda retornou status code 204 (No Content)")
 		return nil
