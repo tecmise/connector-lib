@@ -13,7 +13,7 @@ import (
 
 type (
 	AssyncPublisher interface {
-		Publish(ctx context.Context, req assync.QueueRequest, queueUrl string) (*assync.QueueTriggerResponse, error)
+		Publish(ctx context.Context, req assync.QueueRequest, queueUrl, messageGroupId, messageDeduplicationId string) (*assync.QueueTriggerResponse, error)
 	}
 
 	assyncPublisher struct {
@@ -30,7 +30,7 @@ func NewAssyncPublisher() AssyncPublisher {
 		client: sqs.NewFromConfig(cfg),
 	}
 }
-func (a assyncPublisher) Publish(ctx context.Context, req assync.QueueRequest, queueUrl string) (*assync.QueueTriggerResponse, error) {
+func (a assyncPublisher) Publish(ctx context.Context, req assync.QueueRequest, queueUrl, messageGroupId, messageDeduplicationId string) (*assync.QueueTriggerResponse, error) {
 	queueURL := queueUrl
 	content, err := json.Marshal(req)
 	if err != nil {
@@ -38,9 +38,12 @@ func (a assyncPublisher) Publish(ctx context.Context, req assync.QueueRequest, q
 		return nil, err
 	}
 	message, err := a.client.SendMessage(ctx, &sqs.SendMessageInput{
-		QueueUrl:    aws.String(queueURL),
-		MessageBody: aws.String(string(content)),
+		QueueUrl:               aws.String(queueURL),
+		MessageBody:            aws.String(string(content)),
+		MessageGroupId:         aws.String(messageGroupId),
+		MessageDeduplicationId: aws.String(messageDeduplicationId),
 	})
+
 	if err != nil {
 		logrus.Fatal("Error", err)
 		return nil, err
