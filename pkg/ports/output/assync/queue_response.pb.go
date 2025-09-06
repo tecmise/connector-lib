@@ -4,7 +4,7 @@
 // 	protoc        v3.21.12
 // source: google/protobuf/queue_response.proto
 
-package queue_response
+package assync
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

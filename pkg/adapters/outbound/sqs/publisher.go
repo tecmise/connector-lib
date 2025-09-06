@@ -8,32 +8,30 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/sirupsen/logrus"
-
-	//"github.com/aws/aws-sdk-go-v2/service/sqs"
-	"github.com/tecmise/connector-lib/pkg/ports/output/shared_kernel/queue_response"
+	"github.com/tecmise/connector-lib/pkg/ports/output/assync"
 )
 
 type (
-	AssyncPublisher[T any] interface {
-		Publish(ctx context.Context, req *T, queueUrl string) (*queue_response.QueueTriggerResponse, error)
+	AssyncPublisher interface {
+		Publish(ctx context.Context, req *assync.QueueRequest, queueUrl string) (*assync.QueueTriggerResponse, error)
 	}
 
-	assyncPublisher[T any] struct {
+	assyncPublisher struct {
 		client *sqs.Client
 	}
 )
 
-func NewAssyncPublisher[T any]() AssyncPublisher[T] {
+func NewAssyncPublisher() AssyncPublisher {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
 	if err != nil {
 		logrus.Fatalf("unable to load SDK config, %v", err)
 	}
-	return &assyncPublisher[T]{
+	return &assyncPublisher{
 		client: sqs.NewFromConfig(cfg),
 	}
 }
 
-func (a assyncPublisher[T]) Publish(ctx context.Context, req *T, queueUrl string) (*queue_response.QueueTriggerResponse, error) {
+func (a assyncPublisher) Publish(ctx context.Context, req *assync.QueueRequest, queueUrl string) (*assync.QueueTriggerResponse, error) {
 	queueURL := queueUrl
 	content, err := json.Marshal(req)
 	if err != nil {
@@ -48,7 +46,7 @@ func (a assyncPublisher[T]) Publish(ctx context.Context, req *T, queueUrl string
 		logrus.Fatal("Error", err)
 		return nil, err
 	}
-	return &queue_response.QueueTriggerResponse{
+	return &assync.QueueTriggerResponse{
 		MessageId: fmt.Sprintf("%s", *message.MessageId),
 	}, nil
 }
