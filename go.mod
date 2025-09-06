@@ -28,4 +28,5 @@ require (
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
+	google.golang.org/protobuf v1.36.8 // indirect
 )
