@@ -31,6 +31,9 @@ func NewAssyncPublisher() AssyncPublisher {
 	}
 }
 func (a assyncPublisher) Publish(ctx context.Context, req assync.QueueRequest, queueUrl, messageGroupId, messageDeduplicationId string) (*assync.QueueTriggerResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	queueURL := queueUrl
 	content, err := json.Marshal(req)
 	if err != nil {
