@@ -9,11 +9,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/sirupsen/logrus"
 	"github.com/tecmise/connector-lib/pkg/ports/output/assync"
+	"github.com/tecmise/connector-lib/pkg/ports/output/request"
 )
 
 type (
 	AssyncPublisher interface {
-		Publish(ctx context.Context, req assync.QueueRequest, queueUrl, messageGroupId, messageDeduplicationId string) (*assync.QueueTriggerResponse, error)
+		Publish(ctx context.Context, req request.Validatable, queueUrl, messageGroupId, messageDeduplicationId string) (*assync.QueueTriggerResponse, error)
 	}
 
 	assyncPublisher struct {
@@ -30,7 +31,7 @@ func NewAssyncPublisher() AssyncPublisher {
 		client: sqs.NewFromConfig(cfg),
 	}
 }
-func (a assyncPublisher) Publish(ctx context.Context, req assync.QueueRequest, queueUrl, messageGroupId, messageDeduplicationId string) (*assync.QueueTriggerResponse, error) {
+func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, queueUrl, messageGroupId, messageDeduplicationId string) (*assync.QueueTriggerResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
