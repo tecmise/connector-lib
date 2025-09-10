@@ -11,8 +11,7 @@ import (
 
 type (
 	LambdaClient[T any, R any] struct {
-		lambdaName string
-		client     *lambda.Client
+		client *lambda.Client
 	}
 
 	LambdaProtocolClient[T any, R any] interface {
@@ -34,17 +33,17 @@ func (c *LambdaClient[T, R]) Invoke(ctx context.Context, lambdaName string, _bod
 	}
 
 	resp, err := c.client.Invoke(ctx, &lambda.InvokeInput{
-		FunctionName: aws.String(c.lambdaName),
+		FunctionName: aws.String(lambdaName),
 		Payload:      payloadBytes,
 	})
 
 	if err != nil {
-		logrus.Warnf("Failed to invoke lambda %s: %v", c.lambdaName, err)
+		logrus.Warnf("Failed to invoke lambda %s: %v", lambdaName, err)
 		return nil, err
 	}
 
 	if resp.FunctionError != nil {
-		logrus.Warnf("Failed to invoke lambda %s: %v", c.lambdaName, *resp.FunctionError)
+		logrus.Warnf("Failed to invoke lambda %s: %v", lambdaName, *resp.FunctionError)
 		return nil, errors.New(*resp.FunctionError)
 	}
 
