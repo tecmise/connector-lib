@@ -1,4 +1,4 @@
-package rest
+package client_rest
 
 import (
 	"bytes"

@@ -1,4 +1,4 @@
-package lambda
+package client_lambda_proxy
 
 import (
 	"context"

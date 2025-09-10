@@ -1,4 +1,4 @@
-package lambda
+package client_lambda_proxy
 
 import (
 	"context"
@@ -12,42 +12,50 @@ import (
 )
 
 type (
-	ProtocolClient[T any, R any] struct {
+	protocolClient[T any, R any] struct {
 		lambdaName string
 		uri        string
 		client     *lambda.Client
 	}
+
+	LambdaProxyProtocolClient[T any, R any] interface {
+		GET(ctx context.Context) lambda2.InvokeOutputResult[R]
+		POST(ctx context.Context, body *T) lambda2.InvokeOutputResult[R]
+		PUT(ctx context.Context, body *T) lambda2.InvokeOutputResult[R]
+		PATCH(ctx context.Context, body *T) lambda2.InvokeOutputResult[R]
+		DELETE(ctx context.Context, body *T) lambda2.InvokeOutputResult[R]
+	}
 )
 
-func NewClientV2[T any, R any](lambdaClient *lambda.Client, lambdaName string, uri string) *ProtocolClient[T, R] {
-	return &ProtocolClient[T, R]{
+func NewClient[T any, R any](lambdaClient *lambda.Client, lambdaName string, uri string) LambdaProxyProtocolClient[T, R] {
+	return &protocolClient[T, R]{
 		lambdaName: lambdaName,
 		client:     lambdaClient,
 		uri:        uri,
 	}
 }
 
-func (c *ProtocolClient[T, R]) GET(ctx context.Context) lambda2.InvokeOutputResult[R] {
+func (c *protocolClient[T, R]) GET(ctx context.Context) lambda2.InvokeOutputResult[R] {
 	return c.invoke(ctx, nil, http.MethodGet)
 }
 
-func (c *ProtocolClient[T, R]) POST(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
+func (c *protocolClient[T, R]) POST(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
 	return c.invoke(ctx, body, http.MethodPost)
 }
 
-func (c *ProtocolClient[T, R]) PUT(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
+func (c *protocolClient[T, R]) PUT(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
 	return c.invoke(ctx, body, http.MethodPut)
 }
 
-func (c *ProtocolClient[T, R]) PATCH(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
+func (c *protocolClient[T, R]) PATCH(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
 	return c.invoke(ctx, body, http.MethodPatch)
 }
 
-func (c *ProtocolClient[T, R]) DELETE(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
+func (c *protocolClient[T, R]) DELETE(ctx context.Context, body *T) lambda2.InvokeOutputResult[R] {
 	return c.invoke(ctx, body, http.MethodDelete)
 }
 
-func (c *ProtocolClient[T, R]) invoke(
+func (c *protocolClient[T, R]) invoke(
 	ctx context.Context,
 	_body interface{},
 	method string,

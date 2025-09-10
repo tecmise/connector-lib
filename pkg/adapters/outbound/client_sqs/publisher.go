@@ -1,4 +1,4 @@
-package sqs
+package client_sqs
 
 import (
 	"context"
