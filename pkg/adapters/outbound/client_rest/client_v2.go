@@ -26,11 +26,11 @@ type (
 	}
 
 	RestProxyProtocolClient[Request any, Response any] interface {
-		GET(ctx context.Context, resource string, headers map[string]string) (Response, error)
-		POST(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error)
-		PUT(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error)
-		PATCH(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error)
-		DELETE(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error)
+		GET(ctx context.Context, resource string, headers map[string]string) (*Response, error)
+		POST(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error)
+		PUT(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error)
+		PATCH(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error)
+		DELETE(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error)
 	}
 
 	requestObject struct {
@@ -46,9 +46,9 @@ func (r *requestObject) getUrl() string {
 	return fmt.Sprintf("%s/%s", r.Host, r.Resource)
 }
 
-func (p protocolClient[Request, Response]) GET(ctx context.Context, resource string, headers map[string]string) (Response, error) {
+func (p protocolClient[Request, Response]) GET(ctx context.Context, resource string, headers map[string]string) (*Response, error) {
 	var response Response
-	return response, sendRequest(ctx, requestObject{
+	return &response, sendRequest(ctx, requestObject{
 		Resource: resource,
 		Method:   "GET",
 		Body:     nil,
@@ -57,9 +57,9 @@ func (p protocolClient[Request, Response]) GET(ctx context.Context, resource str
 	}, &response)
 }
 
-func (p protocolClient[Request, Response]) POST(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error) {
+func (p protocolClient[Request, Response]) POST(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error) {
 	var response Response
-	return response, sendRequest(ctx, requestObject{
+	return &response, sendRequest(ctx, requestObject{
 		Resource: resource,
 		Method:   "POST",
 		Body:     body,
@@ -68,9 +68,9 @@ func (p protocolClient[Request, Response]) POST(ctx context.Context, resource st
 	}, &response)
 }
 
-func (p protocolClient[Request, Response]) PUT(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error) {
+func (p protocolClient[Request, Response]) PUT(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error) {
 	var response Response
-	return response, sendRequest(ctx, requestObject{
+	return &response, sendRequest(ctx, requestObject{
 		Resource: resource,
 		Method:   "PUT",
 		Body:     body,
@@ -79,9 +79,9 @@ func (p protocolClient[Request, Response]) PUT(ctx context.Context, resource str
 	}, &response)
 }
 
-func (p protocolClient[Request, Response]) PATCH(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error) {
+func (p protocolClient[Request, Response]) PATCH(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error) {
 	var response Response
-	return response, sendRequest(ctx, requestObject{
+	return &response, sendRequest(ctx, requestObject{
 		Resource: resource,
 		Method:   "PATCH",
 		Body:     body,
@@ -90,9 +90,9 @@ func (p protocolClient[Request, Response]) PATCH(ctx context.Context, resource s
 	}, &response)
 }
 
-func (p protocolClient[Request, Response]) DELETE(ctx context.Context, resource string, body *Request, headers map[string]string) (Response, error) {
+func (p protocolClient[Request, Response]) DELETE(ctx context.Context, resource string, body *Request, headers map[string]string) (*Response, error) {
 	var response Response
-	return response, sendRequest(ctx, requestObject{
+	return &response, sendRequest(ctx, requestObject{
 		Resource: resource,
 		Method:   "DELETE",
 		Body:     body,
