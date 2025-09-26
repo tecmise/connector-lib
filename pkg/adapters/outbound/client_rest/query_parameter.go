@@ -113,5 +113,9 @@ func GetQueryParameters(inputs ...QueryParameter) string {
 		}
 	}
 
-	return query
+	if len(query) > 0 {
+		return query[1:]
+	} else {
+		return ""
+	}
 }
