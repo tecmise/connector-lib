@@ -114,7 +114,7 @@ func GetQueryParameters(inputs ...QueryParameter) string {
 	}
 
 	if len(query) > 0 {
-		return query[1:]
+		return fmt.Sprintf("?%s", query[1:])
 	} else {
 		return ""
 	}
