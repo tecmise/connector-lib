@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
+	"github.com/aws/aws-sdk-go-v2/service/sqs/types"
 	"github.com/sirupsen/logrus"
 	"github.com/tecmise/connector-lib/pkg/ports/output/assync"
 	"github.com/tecmise/connector-lib/pkg/ports/output/request"
@@ -41,11 +42,18 @@ func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, q
 		logrus.Fatal("Error", err)
 		return nil, err
 	}
+
 	message, err := a.client.SendMessage(ctx, &sqs.SendMessageInput{
 		QueueUrl:               aws.String(queueURL),
 		MessageBody:            aws.String(string(content)),
 		MessageGroupId:         aws.String(messageGroupId),
 		MessageDeduplicationId: aws.String(messageDeduplicationId),
+		MessageAttributes: map[string]types.MessageAttributeValue{
+			"kind": {
+				DataType:    aws.String("String"),
+				StringValue: aws.String(fmt.Sprintf("%T", req)),
+			},
+		},
 	})
 
 	if err != nil {
