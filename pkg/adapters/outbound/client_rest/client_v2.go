@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/tecmise/connector-lib/pkg/ports/output/connector"
 	"github.com/valyala/fasthttp"
 	"io"
 	"mime/multipart"
@@ -203,10 +201,5 @@ func sendRequest(ctx context.Context, param requestObject, response interface{})
 		return nil
 	}
 
-	var errResponse connector.Result[string]
-	err = json.Unmarshal(resp.Body(), &errResponse)
-	if err != nil {
-		return err
-	}
-	return errors.New(errResponse.Content)
+	return fmt.Errorf("status_code: %d, content: %v", resp.StatusCode(), string(resp.Body()))
 }
