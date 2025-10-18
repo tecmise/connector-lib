@@ -202,5 +202,5 @@ func sendRequest(ctx context.Context, param requestObject, response interface{})
 		return nil
 	}
 
-	return fmt.Errorf("status_code: %d, content: %v", resp.StatusCode(), base64.StdEncoding.EncodeToString(resp.Body()))
+	return fmt.Errorf("{ \"status_code\": %d, \"content\": \"%v\" }", resp.StatusCode(), base64.StdEncoding.EncodeToString(resp.Body()))
 }
