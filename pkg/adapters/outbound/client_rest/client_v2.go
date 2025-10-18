@@ -3,6 +3,7 @@ package client_rest
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
@@ -201,5 +202,5 @@ func sendRequest(ctx context.Context, param requestObject, response interface{})
 		return nil
 	}
 
-	return fmt.Errorf("status_code: %d, content: %v", resp.StatusCode(), string(resp.Body()))
+	return fmt.Errorf("status_code: %d, content: %v", resp.StatusCode(), base64.StdEncoding.EncodeToString(resp.Body()))
 }
