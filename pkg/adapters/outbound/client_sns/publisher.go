@@ -1,12 +1,12 @@
-package client_sqs
+package client_sns
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/sqs"
-	"github.com/aws/aws-sdk-go-v2/service/sqs/types"
+	"github.com/aws/aws-sdk-go-v2/service/sns"
+	"github.com/aws/aws-sdk-go-v2/service/sns/types"
 	"github.com/sirupsen/logrus"
 	"github.com/tecmise/connector-lib/pkg/adapters/outbound/shared_kernel"
 	"github.com/tecmise/connector-lib/pkg/ports/output/assync"
@@ -15,34 +15,35 @@ import (
 )
 
 type (
-	AssyncPublisher interface {
-		Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error)
+	AssyncPublisherSns interface {
+		Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error)
 	}
 
-	assyncPublisher struct {
-		client     *sqs.Client
+	assyncPublisherSns struct {
+		client     *sns.Client
 		identifier string
 	}
 )
 
-func NewAssyncPublisher(client *sqs.Client, identifier string) AssyncPublisher {
-	return &assyncPublisher{
+func NewAssyncPublisherV2(client *sns.Client, identifier string) AssyncPublisherSns {
+	return &assyncPublisherSns{
 		client:     client,
 		identifier: identifier,
 	}
 }
-func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error) {
+
+func (a assyncPublisherSns) Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	queueURL := queueUrl
+
 	content, err := json.Marshal(req)
 	if err != nil {
-		logrus.Fatal("Error", err)
+		logrus.Error("error marshaling request:", err)
 		return nil, err
 	}
 
-	isFifo := strings.HasSuffix(queueUrl, ".fifo")
+	isFifo := strings.HasSuffix(topicArn, ".fifo")
 
 	if fifoData != nil && !isFifo {
 		return nil, fmt.Errorf("fifo data provided but queue URL is not a FIFO queue (missing .fifo suffix)")
@@ -51,9 +52,10 @@ func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, q
 		return nil, fmt.Errorf("queue URL is FIFO but no fifo data provided")
 	}
 
-	input := sqs.SendMessageInput{
-		QueueUrl:    aws.String(queueURL),
-		MessageBody: aws.String(string(content)),
+	input := &sns.PublishInput{
+		TopicArn: aws.String(topicArn),
+		Subject:  aws.String(subject),
+		Message:  aws.String(string(content)),
 		MessageAttributes: map[string]types.MessageAttributeValue{
 			"kind": {
 				DataType:    aws.String("String"),
@@ -73,14 +75,13 @@ func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, q
 		}
 	}
 
-	message, err := a.client.SendMessage(ctx, &input)
-
+	message, err := a.client.Publish(ctx, input)
 	if err != nil {
-		logrus.Fatal("Error", err)
+		logrus.Error("error sending message:", err)
 		return nil, err
 	}
 
 	return &assync.QueueTriggerResponse{
-		MessageId: fmt.Sprintf("%s", *message.MessageId),
+		MessageId: aws.ToString(message.MessageId),
 	}, nil
 }
