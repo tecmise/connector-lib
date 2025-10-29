@@ -25,7 +25,7 @@ type (
 	}
 )
 
-func NewAssyncPublisherV2(client *sns.Client, identifier string) AssyncPublisherSns {
+func NewPublisher(client *sns.Client, identifier string) AssyncPublisherSns {
 	return &assyncPublisherSns{
 		client:     client,
 		identifier: identifier,
