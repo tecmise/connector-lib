@@ -141,10 +141,10 @@ const file_protobuf_rest_request_proto_rawDesc = "" +
 	"\n" +
 	"\x1bprotobuf/rest_request.proto\x12\x10tecmise.requests\x1a google/protobuf/descriptor.proto\x1a\x1cprotobuf/field_options.proto\">\n" +
 	"\aFindOne\x123\n" +
-	"\x02id\x18\x01 \x01(\x03B#\x9a\xb5\x18\brequired\xa2\xb5\x18\rID do cliente\xaa\xb5\x18\x02idR\x02id\"\x84\x02\n" +
-	"\aFindAll\x127\n" +
-	"\x04page\x18\x01 \x01(\x05B#\xa2\xb5\x18\x1fNúmero da página (padrão: 1)R\x04page\x12C\n" +
-	"\x05limit\x18\x02 \x01(\x05B-\xa2\xb5\x18)Limite de itens por página (padrão: 10)R\x05limit\x12+\n" +
+	"\x02id\x18\x01 \x01(\x03B#\x9a\xb5\x18\brequired\xa2\xb5\x18\rID do cliente\xaa\xb5\x18\x02idR\x02id\"\x96\x02\n" +
+	"\aFindAll\x12@\n" +
+	"\x04page\x18\x01 \x01(\x05B,\x9a\xb5\x18\x05min=1\xa2\xb5\x18\x1fNúmero da página (padrão: 1)R\x04page\x12L\n" +
+	"\x05limit\x18\x02 \x01(\x05B6\x9a\xb5\x18\x05min=1\xa2\xb5\x18)Limite de itens por página (padrão: 10)R\x05limit\x12+\n" +
 	"\x06filter\x18\x03 \x01(\tB\x13\xa2\xb5\x18\x0fFiltro de buscaR\x06filter\x12N\n" +
 	"\x05order\x18\x04 \x01(\tB8\x9a\xb5\x18\x0eoneof=ASC DESC\xa2\xb5\x18\"Ordem dos resultados (ASC ou DESC)R\x05orderBa\n" +
 	"'com.tecmise.connector.ports.output.restZ6github.com/tecmise/connector-lib/pkg/ports/output/restb\x06proto3"
