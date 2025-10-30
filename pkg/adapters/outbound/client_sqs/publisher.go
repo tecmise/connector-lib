@@ -16,7 +16,7 @@ import (
 
 type (
 	AssyncPublisher interface {
-		Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error)
+		Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.SnsTriggerResponse, error)
 	}
 
 	assyncPublisher struct {
@@ -31,7 +31,7 @@ func NewAssyncPublisher(client *sqs.Client, identifier string) AssyncPublisher {
 		identifier: identifier,
 	}
 }
-func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error) {
+func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.SnsTriggerResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, q
 		return nil, err
 	}
 
-	return &assync.QueueTriggerResponse{
+	return &assync.SnsTriggerResponse{
 		MessageId: fmt.Sprintf("%s", *message.MessageId),
 	}, nil
 }
