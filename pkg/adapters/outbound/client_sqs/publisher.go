@@ -16,7 +16,7 @@ import (
 
 type (
 	AssyncPublisher interface {
-		Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error)
+		Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties, attrs map[string]string) (*assync.QueueTriggerResponse, error)
 	}
 
 	assyncPublisher struct {
@@ -31,7 +31,7 @@ func NewAssyncPublisher(client *sqs.Client, identifier string) AssyncPublisher {
 		identifier: identifier,
 	}
 }
-func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error) {
+func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, queueUrl string, fifoData *shared_kernel.FifoProperties, attrs map[string]string) (*assync.QueueTriggerResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -64,6 +64,15 @@ func (a assyncPublisher) Publish(ctx context.Context, req request.Validatable, q
 				StringValue: aws.String(a.identifier),
 			},
 		},
+	}
+
+	if attrs != nil {
+		for k, v := range attrs {
+			input.MessageAttributes[k] = types.MessageAttributeValue{
+				DataType:    aws.String("String"),
+				StringValue: aws.String(v),
+			}
+		}
 	}
 
 	if isFifo {

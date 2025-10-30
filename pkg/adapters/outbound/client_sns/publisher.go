@@ -16,7 +16,7 @@ import (
 
 type (
 	AssyncPublisherSns interface {
-		Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.SnsTriggerResponse, error)
+		Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties, attrs map[string]string) (*assync.SnsTriggerResponse, error)
 	}
 
 	assyncPublisherSns struct {
@@ -32,7 +32,7 @@ func NewPublisher(client *sns.Client, identifier string) AssyncPublisherSns {
 	}
 }
 
-func (a assyncPublisherSns) Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.SnsTriggerResponse, error) {
+func (a assyncPublisherSns) Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties, attrs map[string]string) (*assync.SnsTriggerResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -66,6 +66,15 @@ func (a assyncPublisherSns) Publish(ctx context.Context, req request.Validatable
 				StringValue: aws.String(a.identifier),
 			},
 		},
+	}
+
+	if attrs != nil {
+		for k, v := range attrs {
+			input.MessageAttributes[k] = types.MessageAttributeValue{
+				DataType:    aws.String("String"),
+				StringValue: aws.String(v),
+			}
+		}
 	}
 
 	if isFifo {
