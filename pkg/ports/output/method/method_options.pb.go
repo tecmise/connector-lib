@@ -123,7 +123,7 @@ func (HttpMethod) EnumDescriptor() ([]byte, []int) {
 type SnsIntegration struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Topic         string                 `protobuf:"bytes,1,opt,name=topic,proto3" json:"topic,omitempty"`
-	Fifo          bool                   `protobuf:"varint,2,opt,name=fifo,proto3" json:"fifo,omitempty"`
+	Attributes    map[string]string      `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -165,11 +165,11 @@ func (x *SnsIntegration) GetTopic() string {
 	return ""
 }
 
-func (x *SnsIntegration) GetFifo() bool {
+func (x *SnsIntegration) GetAttributes() map[string]string {
 	if x != nil {
-		return x.Fifo
+		return x.Attributes
 	}
-	return false
+	return nil
 }
 
 type SqsIntegration struct {
@@ -371,10 +371,15 @@ var File_protobuf_method_options_proto protoreflect.FileDescriptor
 
 const file_protobuf_method_options_proto_rawDesc = "" +
 	"\n" +
-	"\x1dprotobuf/method_options.proto\x12\x0ftecmise.methods\x1a google/protobuf/descriptor.proto\":\n" +
+	"\x1dprotobuf/method_options.proto\x12\x0ftecmise.methods\x1a google/protobuf/descriptor.proto\"\xb6\x01\n" +
 	"\x0eSnsIntegration\x12\x14\n" +
-	"\x05topic\x18\x01 \x01(\tR\x05topic\x12\x12\n" +
-	"\x04fifo\x18\x02 \x01(\bR\x04fifo\":\n" +
+	"\x05topic\x18\x01 \x01(\tR\x05topic\x12O\n" +
+	"\n" +
+	"attributes\x18\x02 \x03(\v2/.tecmise.methods.SnsIntegration.AttributesEntryR\n" +
+	"attributes\x1a=\n" +
+	"\x0fAttributesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\":\n" +
 	"\x0eSqsIntegration\x12\x14\n" +
 	"\x05queue\x18\x01 \x01(\tR\x05queue\x12\x12\n" +
 	"\x04fifo\x18\x02 \x01(\bR\x04fifo\"8\n" +
@@ -413,7 +418,7 @@ func file_protobuf_method_options_proto_rawDescGZIP() []byte {
 }
 
 var file_protobuf_method_options_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_protobuf_method_options_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_protobuf_method_options_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_protobuf_method_options_proto_goTypes = []any{
 	(ContextParameterKind)(0),          // 0: tecmise.methods.ContextParameterKind
 	(HttpMethod)(0),                    // 1: tecmise.methods.HttpMethod
@@ -421,23 +426,25 @@ var file_protobuf_method_options_proto_goTypes = []any{
 	(*SqsIntegration)(nil),             // 3: tecmise.methods.SqsIntegration
 	(*LambdaIntegration)(nil),          // 4: tecmise.methods.LambdaIntegration
 	(*HttpIntegration)(nil),            // 5: tecmise.methods.HttpIntegration
-	(*descriptorpb.MethodOptions)(nil), // 6: google.protobuf.MethodOptions
+	nil,                                // 6: tecmise.methods.SnsIntegration.AttributesEntry
+	(*descriptorpb.MethodOptions)(nil), // 7: google.protobuf.MethodOptions
 }
 var file_protobuf_method_options_proto_depIdxs = []int32{
-	1, // 0: tecmise.methods.HttpIntegration.method:type_name -> tecmise.methods.HttpMethod
-	6, // 1: tecmise.methods.http:extendee -> google.protobuf.MethodOptions
-	6, // 2: tecmise.methods.sqs:extendee -> google.protobuf.MethodOptions
-	6, // 3: tecmise.methods.lambda:extendee -> google.protobuf.MethodOptions
-	6, // 4: tecmise.methods.sns:extendee -> google.protobuf.MethodOptions
-	5, // 5: tecmise.methods.http:type_name -> tecmise.methods.HttpIntegration
-	3, // 6: tecmise.methods.sqs:type_name -> tecmise.methods.SqsIntegration
-	4, // 7: tecmise.methods.lambda:type_name -> tecmise.methods.LambdaIntegration
-	2, // 8: tecmise.methods.sns:type_name -> tecmise.methods.SnsIntegration
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	5, // [5:9] is the sub-list for extension type_name
-	1, // [1:5] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6,  // 0: tecmise.methods.SnsIntegration.attributes:type_name -> tecmise.methods.SnsIntegration.AttributesEntry
+	1,  // 1: tecmise.methods.HttpIntegration.method:type_name -> tecmise.methods.HttpMethod
+	7,  // 2: tecmise.methods.http:extendee -> google.protobuf.MethodOptions
+	7,  // 3: tecmise.methods.sqs:extendee -> google.protobuf.MethodOptions
+	7,  // 4: tecmise.methods.lambda:extendee -> google.protobuf.MethodOptions
+	7,  // 5: tecmise.methods.sns:extendee -> google.protobuf.MethodOptions
+	5,  // 6: tecmise.methods.http:type_name -> tecmise.methods.HttpIntegration
+	3,  // 7: tecmise.methods.sqs:type_name -> tecmise.methods.SqsIntegration
+	4,  // 8: tecmise.methods.lambda:type_name -> tecmise.methods.LambdaIntegration
+	2,  // 9: tecmise.methods.sns:type_name -> tecmise.methods.SnsIntegration
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	6,  // [6:10] is the sub-list for extension type_name
+	2,  // [2:6] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_protobuf_method_options_proto_init() }
@@ -451,7 +458,7 @@ func file_protobuf_method_options_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_protobuf_method_options_proto_rawDesc), len(file_protobuf_method_options_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 4,
 			NumServices:   0,
 		},
