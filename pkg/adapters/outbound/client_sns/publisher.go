@@ -16,7 +16,7 @@ import (
 
 type (
 	AssyncPublisherSns interface {
-		Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error)
+		Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.SnsTriggerResponse, error)
 	}
 
 	assyncPublisherSns struct {
@@ -32,7 +32,7 @@ func NewPublisher(client *sns.Client, identifier string) AssyncPublisherSns {
 	}
 }
 
-func (a assyncPublisherSns) Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.QueueTriggerResponse, error) {
+func (a assyncPublisherSns) Publish(ctx context.Context, req request.Validatable, topicArn, subject string, fifoData *shared_kernel.FifoProperties) (*assync.SnsTriggerResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func (a assyncPublisherSns) Publish(ctx context.Context, req request.Validatable
 		return nil, err
 	}
 
-	return &assync.QueueTriggerResponse{
+	return &assync.SnsTriggerResponse{
 		MessageId: aws.ToString(message.MessageId),
 	}, nil
 }
